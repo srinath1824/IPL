@@ -2,12 +2,11 @@ const mongoose = require("mongoose");
 const express = require("express");
 const multer = require("multer");
 const app = express();
-const Joi = require('@hapi/joi');
+const Joi = require("@hapi/joi");
 const _ = require("lodash");
 const excelToJson = require("convert-excel-to-json");
-const fs = require('fs')
-require('dotenv').config();
-let MongoClient = require("mongodb").MongoClient;
+const fs = require("fs");
+require("dotenv").config();
 mongoose.pluralize(null);
 
 let url = process.env.MONGODB_URI;
@@ -24,12 +23,22 @@ app.use(function(req, res, next) {
   next();
 });
 
+mongoose
+  .connect(url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("connected to mongoDB...");
+  })
+  .catch(err => {
+    console.log("could not connect to mongoDB...", err);
+  });
+
 const courseSchema = new mongoose.Schema({
   playerName: String,
-  score: Number,
   role: String,
-  highScore: Number,
-  franchise: String
+  price: String
 });
 
 global.__basedir = __dirname;
@@ -41,7 +50,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
-  },
+  }
 });
 
 const upload = multer({ storage: storage });
@@ -53,27 +62,26 @@ function validate(excelData) {
     playerName: Joi.string().required(),
     role: Joi.string().required(),
     price: Joi.string().required()
-  })
+  });
 
-  for(let team in excelData) {
+  for (let team in excelData) {
     excelData[team].slice(1).map(data => {
       const { error, value } = profileSchema.validate(data);
-      if(!error) {
+      if (!error) {
         // console.log("Success")
       } else {
-        console.log('Failure', error.details[0].message)
-        return false
+        console.log("Failure", error.details[0].message);
+        return false;
       }
-    })
+    });
   }
-  return true
+  return true;
 }
-
 
 // -> Import Excel File to MongoDB database
 function importExcelData2MongoDB(filePath, fileName) {
   // -> Read Excel File to Json Data
-  console.log('filename',fileName);
+  console.log("filename", fileName);
   const excelData = excelToJson({
     sourceFile: filePath,
     sheets: [
@@ -82,85 +90,73 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
+          C: "price"
+        }
       },
       {
         name: "MI",
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
+          C: "price"
+        }
       },
       {
         name: "CSK",
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
+          C: "price"
+        }
       },
       {
         name: "DC",
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
+          C: "price"
+        }
       },
       {
         name: "KXIP",
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
+          C: "price"
+        }
       },
       {
         name: "KKR",
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
+          C: "price"
+        }
       },
       {
         name: "RR",
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
+          C: "price"
+        }
       },
       {
         name: "SRH",
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price",
-        },
-      },
+          C: "price"
+        }
+      }
     ]
-  })
+  });
 
   // console.log('EXCEL DATA', excelData)
 
   // Insert Json-Object to MongoDB
-  let result = validate(excelData)
-  console.log('2222222', result)
-  if(result) {
-
-    mongoose
-  .connect(
-    url,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    }
-  )
-  .then(() => { 
-    console.log("connected to mongoDB...")
+  let result = validate(excelData);
+  if (result) {
     for (let data in excelData) {
       let documents = excelData[data].slice(1);
       const Course = mongoose.model(data, courseSchema);
@@ -176,18 +172,22 @@ function importExcelData2MongoDB(filePath, fileName) {
         // db.close();
       });
     }
-  })
-  .catch(err => console.log("could not connect to mongoDB..."));
-   fs.unlinkSync(filePath);
-};
+    fs.unlinkSync(filePath);
+  }
 }
 
 // -> Express Upload RestAPIs
 app.post("/api/uploadfile", upload.single("uploadfile"), async (req, res) => {
   try {
-    await importExcelData2MongoDB(__basedir + "/uploads/" + req.file.filename, req.file.originalname.split('.')[0].replace(/ /g,'').trim(' '));
+    await importExcelData2MongoDB(
+      __basedir + "/uploads/" + req.file.filename,
+      req.file.originalname
+        .split(".")[0]
+        .replace(/ /g, "")
+        .trim(" ")
+    );
     res.json({
-      msg: "File uploaded/import successfully!",
+      msg: "File uploaded/import successfully!"
       //file: req.file,
     });
   } catch {
@@ -200,7 +200,7 @@ app.get("/api/getdata/:team", (req, res) => {
   const Course = mongoose.model(req.params.team, courseSchema);
   Course.find({}, function(err, data) {
     if (err) {
-      res.send("111111111");
+      res.send("Error uploading data", err);
     } else {
       res.send(data);
     }
@@ -223,4 +223,4 @@ app.post("/api/savedata", (req, res) => {
 
 app.listen(5000, () => {
   console.log("SERVER is listining to 5000");
-})
+});
