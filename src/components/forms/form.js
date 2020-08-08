@@ -69,7 +69,10 @@ class Form extends Component {
     }
     console.log("111111111", error);
     if (count === 0) {
-      Axios.post("http://localhost:5000/api/savedata", this.state.playerDetails)
+      Axios.post(
+        "http://192.168.0.8:5000/api/savedata",
+        this.state.playerDetails
+      )
         .then(res => {
           console.log(res);
           this.setState({ playerDetails: clearForm, formSubmited: true });
@@ -99,7 +102,14 @@ class Form extends Component {
     return (
       <div>
         <Grid container>
-          <Grid container item xs={6} style={{ justifyContent: "center" }}>
+          <Grid
+            container
+            item
+            xs={12}
+            md={6}
+            lg={6}
+            style={{ justifyContent: "center" }}
+          >
             <div style={{ textAlign: "center" }}>
               <h4>PLAYER DETAILS</h4>
               <p style={{ color: "red" }}>{error}</p>
@@ -198,7 +208,7 @@ class Form extends Component {
             </div>
           </Grid>
           <Divider orientation="vertical" flexItem />
-          <Grid item xs={5} style={{ textAlign: "center" }}>
+          <Grid item xs={12} sm={5} lg={5} style={{ textAlign: "center" }}>
             <h2>Please Choose file</h2>
             <TextField
               required

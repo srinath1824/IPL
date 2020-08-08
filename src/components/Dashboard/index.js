@@ -16,22 +16,34 @@ class Dashboard extends Component {
   handleClick(team) {
     this.props.setTeamSelected(team.name);
     this.props.loadingSelected(true);
-    axios
-      .get(`http://localhost:5000/api/getdata/${team.name}`)
-      .then(res => {
-        console.log("DATA", res.data);
-        // this.setState({ data: false });
-        this.props.loadingSelected(false);
-        this.props.getTeamSelected(res.data);
-      })
-      .catch(err => console.log("error"));
+    if (this.props.iplTeams[team.name].length > 0) {
+      this.props.loadingSelected(false);
+      this.props.getTeamSelected(this.props.iplTeams[team.name]);
+      this.props.teamsSelected({
+        name: team.name,
+        players: this.props.iplTeams[team.name]
+      });
+    } else {
+      axios
+        .get(`http://192.168.0.8:5000/api/getdata/${team.name}`)
+        .then(res => {
+          this.props.loadingSelected(false);
+          this.props.getTeamSelected(res.data);
+          this.props.teamsSelected({ name: team.name, players: res.data });
+        })
+        .catch(err => console.log("error"));
+    }
     this.props.history.push("teams");
   }
 
   teamCard(team) {
     return (
-      <Card onClick={() => this.handleClick(team)}>
+      <Card
+        onClick={() => this.handleClick(team)}
+        style={{ borderRadius: "50%", cursor: "pointer" }}
+      >
         <CardContent
+          className="cards"
           style={{
             height: "150px",
             backgroundColor: team.color
@@ -73,7 +85,7 @@ class Dashboard extends Component {
               {this.teamCard({ name: "SRH", color: "#C64F29" })}
             </Grid>
             <Grid item xs={12} sm={6} lg={3}>
-              {this.teamCard({ name: "DD", color: "#1A4292" })}
+              {this.teamCard({ name: "DC", color: "#1A4292" })}
             </Grid>
             <Grid item xs={12} sm={6} lg={3}>
               {this.teamCard({ name: "KXIP", color: "#E0212C" })}
@@ -90,14 +102,16 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    teamSelected: state.dashboard.teamSelected
+    teamSelected: state.dashboard.teamSelected,
+    iplTeams: state.teams
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
     setTeamSelected: data => dispatch({ type: actionTypes.TEAM_SELECT, data }),
     getTeamSelected: data => dispatch({ type: actionTypes.SELECT_TEAM, data }),
-    loadingSelected: data => dispatch({ type: actionTypes.LOADING_PAGE, data })
+    loadingSelected: data => dispatch({ type: actionTypes.LOADING_PAGE, data }),
+    teamsSelected: data => dispatch({ type: actionTypes.TEAMS_SELECT, data })
   };
 }
 
