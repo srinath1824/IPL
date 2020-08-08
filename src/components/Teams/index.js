@@ -19,10 +19,9 @@ class Teams extends Component {
                   // backgroundColor: "grey"
                 }}
               >
-                <h1 style={{ fontSize: "2rem", textAlign: "center" }}>
-                  {m.playerName}
-                </h1>
-                <h4>{m.role}</h4>
+                <h2>{m.playerName}</h2>
+                <h4>Role: {m.role}</h4>
+                <h4>Price: {m.price}</h4>
               </CardContent>
             </Card>
           </Grid>

@@ -81,6 +81,8 @@ class Form extends Component {
     }
   }
 
+  handleBulkUpload() {}
+
   handleClose() {
     this.setState({ formSubmited: false });
   }
@@ -166,7 +168,7 @@ class Form extends Component {
                     <MenuItem value="SRH">SRH</MenuItem>
                     <MenuItem value="RR">RR</MenuItem>
                     <MenuItem value="DD">DD</MenuItem>
-                    <MenuItem value="KXlP">KXlP</MenuItem>
+                    <MenuItem value="KXIP">KXIP</MenuItem>
                   </Select>
                   <FormHelperText>{error.franchise}</FormHelperText>
                 </FormControl>
@@ -211,7 +213,11 @@ class Form extends Component {
             />
             <br />
             <br />
-            <Button variant="contained" color="primary">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleBulkUpload()}
+            >
               Submit
             </Button>
           </Grid>

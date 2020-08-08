@@ -76,7 +76,7 @@ class Dashboard extends Component {
               {this.teamCard({ name: "DD", color: "#1A4292" })}
             </Grid>
             <Grid item xs={12} sm={6} lg={3}>
-              {this.teamCard({ name: "KXlP", color: "#E0212C" })}
+              {this.teamCard({ name: "KXIP", color: "#E0212C" })}
             </Grid>
             <Grid item xs={12} sm={6} lg={3}>
               {this.teamCard({ name: "RR", color: "#0D4D9F" })}
