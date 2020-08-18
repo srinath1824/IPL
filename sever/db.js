@@ -38,7 +38,9 @@ mongoose
 const courseSchema = new mongoose.Schema({
   playerName: String,
   role: String,
-  price: String
+  price: String,
+  matches: [Object],
+  details: String
 });
 
 global.__basedir = __dirname;
@@ -175,6 +177,122 @@ function importExcelData2MongoDB(filePath, fileName) {
     fs.unlinkSync(filePath);
   }
 }
+function importTeamData2MongoDB(filePath, fileName, team1, team2) {
+  // -> Read Excel File to Json Data
+  console.log("filename", fileName);
+  const excelData = excelToJson({
+    sourceFile: filePath,
+    sheets: [
+      {
+        name: team1,
+        columnToKey: {
+          A: "PlayerName",
+          B: "BAT",
+          C: "BOWL",
+          D: "FIELD",
+          E: "DETAILS"
+        }
+      },
+      {
+        name: team2,
+        columnToKey: {
+          A: "PlayerName",
+          B: "BAT",
+          C: "BOWL",
+          D: "FIELD",
+          E: "DETAILS"
+        }
+      }
+    ]
+  });
+
+  // console.log("EXCEL DATA", excelData);
+
+  // Insert Json-Object to MongoDB
+  // let result = validate(excelData);
+  // if (result) {
+  for (let data in excelData) {
+    let team = "";
+    if (team1 === data) {
+      team = team2;
+    } else if (team2 === data) {
+      team = team1;
+    }
+    let details = excelData[data].slice(1, 2);
+    console.log("DETAILSSSS", details);
+    let documents = excelData[data].slice(2);
+    console.log("DOCUMENTS", documents);
+    const Course = mongoose.model(data, courseSchema);
+    documents.map(async (a, index) => {
+      await Course.find({ playerName: a.PlayerName }, async function(
+        err,
+        docs
+      ) {
+        console.log("DOCSSSSSS", docs);
+        if (docs) {
+          await Course.findOneAndUpdate(
+            { playerName: a.PlayerName },
+            {
+              $set: {
+                matches: {
+                  ...docs[0].matches,
+                  [team]: {
+                    ...docs[0].matches[team],
+                    bat: a.BAT,
+                    bowl: a.BOWL,
+                    field: a.FIELd,
+                    details: details[0].DETAILS
+                  }
+                }
+              }
+            },
+            (err, res) => {
+              if (err) {
+                console.log("storing issue");
+              } else {
+                console.log("matches", res);
+              }
+            }
+          );
+        }
+      });
+    });
+
+    //     Course.insertMany(documents, (err, res) => {
+    //       if (err) {
+    //         console.log("ERRORRRRRRRR", data);
+    //         throw err;
+    //       }
+    //       console.log("Number of documents inserted: ", data, res.length);
+    //       /**
+    //             Number of documents inserted: 5
+    //         */
+    //       // db.close();
+    //     });
+    //   }
+    //   fs.unlinkSync(filePath);
+    // }
+  }
+}
+app.post("/api/teamdata", upload.single("teamdatafile"), async (req, res) => {
+  try {
+    await importTeamData2MongoDB(
+      __basedir + "/uploads/" + req.file.filename,
+      req.file.originalname
+        .split(".")[0]
+        .replace(/ /g, "")
+        .trim(" "),
+      req.query.team1,
+      req.query.team2
+    );
+    res.json({
+      msg: "File uploaded/import successfully!"
+      //file: req.file,
+    });
+  } catch {
+    res.status(400).send("Error occured while uploading to MongoDB");
+  }
+});
 
 // -> Express Upload RestAPIs
 app.post("/api/uploadfile", upload.single("uploadfile"), async (req, res) => {
