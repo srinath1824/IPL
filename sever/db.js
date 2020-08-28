@@ -237,40 +237,29 @@ function importTeamData2MongoDB(filePath, fileName, team1, team2) {
       team = team1;
     }
     let details = excelData[data].slice(1, 2);
-    console.log("DETAILSSSS", details);
     let documents = excelData[data].slice(2);
-    console.log("DOCUMENTS", documents);
     const Course = mongoose.model(data, courseSchema);
     documents.map(async (a, index) => {
       await Course.find({ playerName: a.PlayerName }, async function(
         err,
         docs
       ) {
-        console.log("DOCSSSSSS", docs);
         if (docs) {
-          let updated = {
-            [team]: {
-              // ...docs[0].matches[team],
+          let updated = [
+            ...docs[0].matches,
+            {
+              team: team,
               bat: a.BAT,
               bowl: a.BOWL,
               field: a.FIELd,
               details: details[0].DETAILS
             }
-          };
+          ];
           await Course.findOneAndUpdate(
             { playerName: a.PlayerName },
             {
               $set: {
-                matches: {
-                  // ...docs[0].matches,
-                  [team]: {
-                    // ...docs[0].matches[team],
-                    bat: a.BAT,
-                    bowl: a.BOWL,
-                    field: a.FIELd,
-                    details: details[0].DETAILS
-                  }
-                }
+                matches: updated
               }
             },
             (err, res) => {
