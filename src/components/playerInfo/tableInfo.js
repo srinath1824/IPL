@@ -26,18 +26,6 @@ const StyledTableRow = withStyles(theme => ({
   }
 }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9)
-];
-
 const useStyles = makeStyles({
   table: {
     minWidth: 700
@@ -47,17 +35,21 @@ const useStyles = makeStyles({
 export default function TableInfo(props) {
   const classes = useStyles();
 
-  let rows1 = props.data.map(d => {
-    let { team, bat, bowl, details, field } = d;
-    console.log("3333", bat);
-    console.log("44444", bowl);
+  let rows = props.data.map(d => {
     if (props.name === "bat") {
-      return { ...JSON.parse(bat), team, date: details.date };
+      return {
+        Date: d.Date,
+        Matches: d.team,
+        Score: d.Score,
+        Balls: d.Balls,
+        "S/R": d.SR,
+        "4s": d["4s"],
+        "6s": d["6s"],
+        Wicket: d.Wicket
+      };
     } else if (props.name === "bowl") {
-      return { ...JSON.parse(bowl), team, date: details.date };
     }
   });
-  console.log("ROWSSS", rows1);
 
   return (
     <TableContainer component={Paper}>
@@ -76,12 +68,15 @@ export default function TableInfo(props) {
         </TableHead>
         <TableBody>
           {rows.map(row => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell scope="row">{row.name}</StyledTableCell>
-              <StyledTableCell align="right">{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="right">{row.protein}</StyledTableCell>
+            <StyledTableRow>
+              <StyledTableCell>{row.Date}</StyledTableCell>
+              <StyledTableCell>{row.Matches}</StyledTableCell>
+              <StyledTableCell>{row.Score}</StyledTableCell>
+              <StyledTableCell>{row.Balls}</StyledTableCell>
+              <StyledTableCell>{row["S/R"]}</StyledTableCell>
+              <StyledTableCell>{row["4s"]}</StyledTableCell>
+              <StyledTableCell>{row["6s"]}</StyledTableCell>
+              <StyledTableCell>{row.Wicket}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

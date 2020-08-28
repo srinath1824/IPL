@@ -205,26 +205,50 @@ function importTeamData2MongoDB(filePath, fileName, team1, team2) {
         name: team1,
         columnToKey: {
           A: "PlayerName",
-          B: "BAT",
-          C: "BOWL",
-          D: "FIELD",
-          E: "DETAILS"
+          B: "Score",
+          C: "Wicket",
+          D: "Balls",
+          E: "SR",
+          F: "4s",
+          G: "6s",
+          H: "Overs",
+          I: "Runs",
+          J: "Wickets",
+          K: "Maiden",
+          L: "Eco",
+          M: "Catches",
+          N: "Stumps",
+          O: "Venue",
+          P: "Date",
+          Q: "Result"
         }
       },
       {
         name: team2,
         columnToKey: {
           A: "PlayerName",
-          B: "BAT",
-          C: "BOWL",
-          D: "FIELD",
-          E: "DETAILS"
+          B: "Score",
+          C: "Wicket",
+          D: "Balls",
+          E: "SR",
+          F: "4s",
+          G: "6s",
+          H: "Overs",
+          I: "Runs",
+          J: "Wickets",
+          K: "Maiden",
+          L: "Eco",
+          M: "Catches",
+          N: "Stumps",
+          O: "Venue",
+          P: "Date",
+          Q: "Result"
         }
       }
     ]
   });
 
-  // console.log("EXCEL DATA", excelData);
+  console.log("EXCEL DATA", excelData);
 
   // Insert Json-Object to MongoDB
   // let result = validate(excelData);
@@ -237,6 +261,7 @@ function importTeamData2MongoDB(filePath, fileName, team1, team2) {
       team = team1;
     }
     let details = excelData[data].slice(1, 2);
+    console.log("DETAILS", details);
     let documents = excelData[data].slice(2);
     const Course = mongoose.model(data, courseSchema);
     documents.map(async (a, index) => {
@@ -249,10 +274,23 @@ function importTeamData2MongoDB(filePath, fileName, team1, team2) {
             ...docs[0].matches,
             {
               team: team,
-              bat: a.BAT,
-              bowl: a.BOWL,
-              field: a.FIELd,
-              details: details[0].DETAILS
+              PlayerName: a.PlayerName,
+              Score: a.Score,
+              Wicket: a.Wicket,
+              Balls: a.Balls,
+              SR: a.SR,
+              "4s": a["4s"],
+              "6s": a["6s"],
+              Overs: a.Overs,
+              Runs: a.Runs,
+              Wickets: a.Wickets,
+              Maiden: a.Maiden,
+              Eco: a.Eco,
+              Catches: a.Catches,
+              Stumps: a.Stumps,
+              Date: details[0].Date,
+              Venue: details[0].Venue,
+              Result: details[0].Result
             }
           ];
           await Course.findOneAndUpdate(

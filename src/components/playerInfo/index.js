@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Grid, Card } from "@material-ui/core";
 import { connect } from "react-redux";
 import TableInfo from "./tableInfo";
+import FlightIcon from "@material-ui/icons/Flight";
+import CopyrightIcon from "@material-ui/icons/Copyright";
 
 class PlayerInfo extends Component {
   render() {
@@ -20,14 +22,56 @@ class PlayerInfo extends Component {
                 width="180px"
               />
             </Grid>
-            <Grid item xs={4}>
-              <h4>{playerInfo.playerName}</h4>
+            <Grid item xs={4} style={{ color: "white" }}>
+              {playerInfo.overseas && (
+                <FlightIcon style={{ transform: "translate(0px, -150px)" }} />
+              )}
+              {playerInfo.Captain && (
+                <CopyrightIcon
+                  color="primary"
+                  style={{ transform: "translate(0px, -150px)" }}
+                />
+              )}
+              <h1>
+                <span>{playerInfo.playerName}</span>
+              </h1>
               <h4>Role :{playerInfo.role}</h4>
             </Grid>
-            <Grid item xs={4}>
-              <h4>Matches: 0</h4>
-              <h4>Runs: 0</h4>
-              <h4>Wickets: 0</h4>
+            <Grid
+              item
+              xs={4}
+              style={{
+                color: "white",
+                display: "inline"
+              }}
+            >
+              <h4
+                style={{
+                  display: "inline-block",
+                  textAlign: "center",
+                  marginRight: "20px"
+                }}
+              >
+                Matches: 0
+              </h4>
+              <h4
+                style={{
+                  display: "inline-block",
+                  textAlign: "center",
+                  marginRight: "20px"
+                }}
+              >
+                Runs: 0
+              </h4>
+              <h4
+                style={{
+                  display: "inline-block",
+                  textAlign: "center",
+                  marginRight: "20px"
+                }}
+              >
+                Wickets: 0
+              </h4>
             </Grid>
           </Grid>
         </Card>
