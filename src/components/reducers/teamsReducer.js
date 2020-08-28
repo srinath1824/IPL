@@ -12,7 +12,6 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  console.log("ACTION", action.data);
   switch (action.type) {
     case types.TEAMS_SELECT: {
       return {

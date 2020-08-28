@@ -5,18 +5,37 @@ import Teams from "./components/Teams";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 import Form from "./components/forms/form";
+import PlayerInfo from "./components/playerInfo";
+import Compare from "./components/Compares";
 
 function App() {
   return (
     <div>
-      <Header />
       <Router>
+        <Header />
         <Switch>
-          <Route exact path="/" render={() => <Dashboard />} />
-          <Route exact path="/teams" render={() => <Teams />} />
-          <Route exact path="/form" render={() => <Form />} />
+          <div style={{ padding: "30px" }}>
+            <Route exact path="/" render={() => <Dashboard />} />
+            <Route exact path="/teams" render={() => <Teams />} />
+            <Route exact path="/form" render={() => <Form />} />
+            <Route exact path="/playerInfo" render={() => <PlayerInfo />} />
+            <Route exact path="/Compare" render={() => <Compare />} />
+          </div>
         </Switch>
       </Router>
+      <div
+        style={{
+          background: "#19398A",
+          height: "70px",
+          textAlign: "center",
+          color: "white",
+          bottom: "0px",
+          width: "100%",
+          position: "fixed"
+        }}
+      >
+        @Fan made Dream11 analysis application
+      </div>
     </div>
   );
 }

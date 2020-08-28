@@ -40,7 +40,9 @@ const courseSchema = new mongoose.Schema({
   role: String,
   price: String,
   matches: [Object],
-  details: String
+  details: String,
+  Captain: String,
+  overseas: String
 });
 
 global.__basedir = __dirname;
@@ -92,7 +94,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       },
       {
@@ -100,7 +104,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       },
       {
@@ -108,7 +114,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       },
       {
@@ -116,7 +124,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       },
       {
@@ -124,7 +134,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       },
       {
@@ -132,7 +144,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       },
       {
@@ -140,7 +154,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       },
       {
@@ -148,7 +164,9 @@ function importExcelData2MongoDB(filePath, fileName) {
         columnToKey: {
           A: "playerName",
           B: "role",
-          C: "price"
+          C: "price",
+          D: "overseas",
+          E: "Captain"
         }
       }
     ]
@@ -230,14 +248,23 @@ function importTeamData2MongoDB(filePath, fileName, team1, team2) {
       ) {
         console.log("DOCSSSSSS", docs);
         if (docs) {
+          let updated = {
+            [team]: {
+              // ...docs[0].matches[team],
+              bat: a.BAT,
+              bowl: a.BOWL,
+              field: a.FIELd,
+              details: details[0].DETAILS
+            }
+          };
           await Course.findOneAndUpdate(
             { playerName: a.PlayerName },
             {
               $set: {
                 matches: {
-                  ...docs[0].matches,
+                  // ...docs[0].matches,
                   [team]: {
-                    ...docs[0].matches[team],
+                    // ...docs[0].matches[team],
                     bat: a.BAT,
                     bowl: a.BOWL,
                     field: a.FIELd,
@@ -335,6 +362,17 @@ app.post("/api/savedata", (req, res) => {
       res.send(err);
     } else {
       res.send({ data: "Record has been Inserted..!!" });
+    }
+  });
+});
+
+app.post("/api/userData", (req, res) => {
+  const Course = mongoose.model(req.body.team, courseSchema);
+  Course.find({ playerName: req.body.name }, function(err, data) {
+    if (err) {
+      res.send("Error uploading data", err);
+    } else {
+      res.send(data);
     }
   });
 });

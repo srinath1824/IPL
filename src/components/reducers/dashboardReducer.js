@@ -2,6 +2,8 @@ import types from "../actions";
 
 const initialState = {
   teamSelected: "",
+  playerSelected: "",
+  jersey: "",
   team: [],
   loading: false
 };
@@ -24,6 +26,18 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: action.data
+      };
+    }
+    case types.SET_JERSEY: {
+      return {
+        ...state,
+        jersey: action.data
+      };
+    }
+    case types.PLAYER_SELECT: {
+      return {
+        ...state,
+        playerSelected: action.data
       };
     }
   }
