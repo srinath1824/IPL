@@ -54,6 +54,26 @@ function Header(props) {
             >
               Compare
             </Link>
+            <Link
+              style={{
+                color: "white",
+                textDecoration: "none",
+                marginLeft: "20px"
+              }}
+              to="/"
+            >
+              Stats
+            </Link>
+            <Link
+              style={{
+                color: "white",
+                textDecoration: "none",
+                marginLeft: "20px"
+              }}
+              to="/"
+            >
+              Dream11
+            </Link>
           </Typography>
         </Toolbar>
       </AppBar>

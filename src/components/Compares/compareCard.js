@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Container } from "@material-ui/core";
 import FlightIcon from "@material-ui/icons/Flight";
 import CopyrightIcon from "@material-ui/icons/Copyright";
 
@@ -11,9 +11,9 @@ class CompareCard extends Component {
         a => a.playerName === this.props.name
       );
     return (
-      <div>
+      <Container fixed>
         <Grid container>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={12} lg={12}>
             <img src={`/Teams/${this.props.team}/${this.props.name}.png`} />
             {filteredData.overseas && (
               <FlightIcon style={{ transform: "translate(0px, -150px)" }} />
@@ -25,16 +25,20 @@ class CompareCard extends Component {
               />
             )}
           </Grid>
-          <Grid item xs={6} style={{ textAlign: "center", marginTop: "80px" }}>
-            {filteredData.playerName}
-            <br />
-            {filteredData.role}
-            <br />
-            {this.props.team}
-            <br />
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            lg={12}
+            // style={{ textAlign: "center", marginTop: "80px" }}
+          >
+            <strong>
+              {filteredData.playerName}&nbsp;&nbsp;({this.props.team})
+            </strong>
+            <div>{filteredData.role}</div>
           </Grid>
         </Grid>
-      </div>
+      </Container>
     );
   }
 }

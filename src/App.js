@@ -23,10 +23,10 @@ function App() {
           </div>
         </Switch>
       </Router>
-      <div
+      {/* <div
         style={{
           background: "#19398A",
-          height: "70px",
+          height: "20px",
           textAlign: "center",
           color: "white",
           bottom: "0px",
@@ -35,7 +35,7 @@ function App() {
         }}
       >
         @Fan made Dream11 analysis application
-      </div>
+      </div> */}
     </div>
   );
 }

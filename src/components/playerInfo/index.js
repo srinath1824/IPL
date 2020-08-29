@@ -1,28 +1,51 @@
 import React, { Component } from "react";
-import { Grid, Card } from "@material-ui/core";
+import { Grid, Card, Container } from "@material-ui/core";
 import { connect } from "react-redux";
 import TableInfo from "./tableInfo";
 import FlightIcon from "@material-ui/icons/Flight";
 import CopyrightIcon from "@material-ui/icons/Copyright";
+import "./index.css";
 
 class PlayerInfo extends Component {
   render() {
     let playerInfo = this.props.team.find(
       a => a.playerName === this.props.playerSelected
     );
-    console.log("2222", playerInfo);
+    let firstName, lastName;
+    if (playerInfo.playerName) {
+      let name = playerInfo.playerName.split(" ");
+      if (name.length === 2) {
+        firstName = name[0];
+        lastName = name[1];
+      } else if (name.length > 2) {
+        firstName = name[0];
+        lastName = name.slice(1, name.length).join(" ");
+      }
+    }
+
+    // let batStats, bowlStats = {};
+    // if(playerInfo.matches) {
+    //   playerInfo.matches.map()
+    // }
 
     return (
-      <div>
+      <Container maxWidth="md">
         <Card style={{ background: this.props.jerseyColor }}>
           <Grid container>
-            <Grid item xs={4}>
+            <Grid item xs={12} sm={4} lg={3} style={{ textAlign: "center" }}>
               <img
                 src={`/Teams/${this.props.teamSelected}/${playerInfo.playerName}.png`}
                 width="180px"
               />
             </Grid>
-            <Grid item xs={4} style={{ color: "white" }}>
+            <Grid
+              item
+              className="playerDetails"
+              xs={12}
+              sm={4}
+              lg={3}
+              style={{ color: "white" }}
+            >
               {playerInfo.overseas && (
                 <FlightIcon style={{ transform: "translate(0px, -150px)" }} />
               )}
@@ -32,54 +55,73 @@ class PlayerInfo extends Component {
                   style={{ transform: "translate(0px, -150px)" }}
                 />
               )}
-              <h1>
-                <span>{playerInfo.playerName}</span>
-              </h1>
-              <h4>Role :{playerInfo.role}</h4>
+              <div
+                style={{
+                  fontWeight: 900,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "30px 0px 0px 0px",
+                  fontSize: "x-large"
+                }}
+              >
+                <div style={{ fontWeight: 100 }}>{firstName}</div>
+                <div>{lastName}</div>
+              </div>
+              <Grid container className="playerInfo">
+                <Grid item xs={3}>
+                  <div>Role</div>
+                  <div>Team</div>
+                  <div>Price</div>
+                </Grid>
+                <Grid item xs={6}>
+                  <div>{playerInfo.role}</div>
+                  <div>{this.props.teamSelected}</div>
+                  <div>{playerInfo.price}</div>
+                </Grid>
+              </Grid>
             </Grid>
             <Grid
               item
-              xs={4}
+              xs={12}
+              sm={4}
+              lg={4}
               style={{
                 color: "white",
-                display: "inline"
+                display: "flex"
               }}
             >
-              <h4
+              <Grid
+                container
+                className="MatchesInfo"
                 style={{
-                  display: "inline-block",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   textAlign: "center",
-                  marginRight: "20px"
+                  fontSize: "larger"
                 }}
               >
-                Matches: 0
-              </h4>
-              <h4
-                style={{
-                  display: "inline-block",
-                  textAlign: "center",
-                  marginRight: "20px"
-                }}
-              >
-                Runs: 0
-              </h4>
-              <h4
-                style={{
-                  display: "inline-block",
-                  textAlign: "center",
-                  marginRight: "20px"
-                }}
-              >
-                Wickets: 0
-              </h4>
+                <Grid item xs={4}>
+                  <div>Matches</div>
+                  <div style={{ fontSize: "30px", fontWeight: "bold" }}>0</div>
+                </Grid>
+                <Grid item xs={4}>
+                  <div>Runs</div>
+                  <div style={{ fontSize: "30px", fontWeight: "bold" }}>0</div>
+                </Grid>
+                <Grid item xs={4}>
+                  <div>Wickets</div>
+                  <div style={{ fontSize: "30px", fontWeight: "bold" }}>0</div>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Card>
         <h1>Batting</h1>
         <TableInfo data={playerInfo.matches} name="bat" />
-        {/* <TableInfo data={playerInfo.matches} name="bowl" /> */}
         <h1>Bowling</h1>
-      </div>
+        <TableInfo data={playerInfo.matches} name="bowl" />
+      </Container>
     );
   }
 }

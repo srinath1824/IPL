@@ -3,7 +3,7 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import Grid from "@material-ui/core/Grid";
+import { Grid, Container } from "@material-ui/core";
 import { connect } from "react-redux";
 import actionTypes from "../actions";
 import axios from "axios";
@@ -91,10 +91,15 @@ class Compare extends Component {
     }
 
     return (
-      <React.Fragment>
-        <Grid container>
-          <Grid item xs={2} />
-          <Grid item xs={3} style={{ textAlign: "center" }}>
+      <Container maxWidth="md">
+        <Grid container style={{ justifyContent: "center" }}>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            lg={3}
+            style={{ textAlign: "center", marginTop: "20px" }}
+          >
             <FormControl variant="outlined" fullWidth>
               <InputLabel>Team1</InputLabel>
               <DropDown
@@ -106,7 +111,13 @@ class Compare extends Component {
             </FormControl>
           </Grid>
           <Grid item xs={2} />
-          <Grid item xs={3} style={{ textAlign: "center" }}>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            lg={3}
+            style={{ textAlign: "center", marginTop: "20px" }}
+          >
             <FormControl variant="outlined" fullWidth>
               <InputLabel id="demo-simple-select-outlined-label">
                 Team2
@@ -120,15 +131,14 @@ class Compare extends Component {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={2} />
         </Grid>
 
         <Grid container>
           <Grid item xs={2} />
           {team1Players && (
-            <Grid item xs={3} style={{ marginTop: "20px" }}>
+            <Grid item xs={12} sm={4} lg={3} style={{ marginTop: "20px" }}>
               <FormControl variant="outlined" fullWidth>
-                <InputLabel>Select Player1</InputLabel>
+                <InputLabel>{`Select ${this.props.team1Selected} Player`}</InputLabel>
                 <DropDown
                   name="player1"
                   label="Select Team1"
@@ -140,9 +150,9 @@ class Compare extends Component {
           )}
           <Grid item xs={2} />
           {team2Players && (
-            <Grid item xs={3} style={{ marginTop: "20px" }}>
+            <Grid item xs={12} sm={4} lg={3} style={{ marginTop: "20px" }}>
               <FormControl variant="outlined" fullWidth>
-                <InputLabel>Select Player2</InputLabel>
+                <InputLabel>{`Select ${this.props.team2Selected} Player`}</InputLabel>
                 <DropDown
                   name="player2"
                   label="Select Team2"
@@ -154,11 +164,11 @@ class Compare extends Component {
           )}
         </Grid>
         <Grid item xs={2} />
-        <div style={{ width: "100%", height: "15rem" }}>
+        <div>
           <Grid container>
             <Grid item xs={2} />
             {this.state.player1Stage && (
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={4} lg={3}>
                 <CompareCard
                   name={this.props.player1Selected}
                   team={this.props.team1Selected}
@@ -168,7 +178,7 @@ class Compare extends Component {
             )}
             <Grid item xs={2} />
             {this.state.player2Stage && (
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={4} lg={3}>
                 <CompareCard
                   name={this.props.player2Selected}
                   team={this.props.team2Selected}
@@ -179,22 +189,27 @@ class Compare extends Component {
             <Grid item xs={2} />
           </Grid>
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!(this.props.player1Selected && this.props.player2Selected)}
-          style={{ textAlign: "center", marginLeft: "45%" }}
-          onClick={() => this.setState({ showPopup: true })}
-        >
-          Compare
-        </Button>
+        <div style={{ textAlign: "center" }}>
+          {this.props.player1Selected && this.props.player2Selected && (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={
+                !(this.props.player1Selected && this.props.player2Selected)
+              }
+              onClick={() => this.setState({ showPopup: true })}
+            >
+              Compare
+            </Button>
+          )}
+        </div>
         {this.state.showPopup && (
           <Popup
             show={this.state.showPopup}
             close={() => this.setState({ showPopup: false })}
           />
         )}
-      </React.Fragment>
+      </Container>
     );
   }
 }
