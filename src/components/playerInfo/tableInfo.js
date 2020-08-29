@@ -34,52 +34,62 @@ const useStyles = makeStyles({
 
 export default function TableInfo(props) {
   const classes = useStyles();
+  let tableColsBat = [
+    "Date",
+    "Matches",
+    "Score",
+    "Balls",
+    "SR",
+    "4s",
+    "6s",
+    "Wicket"
+  ];
+  let tableColsBowl = [
+    "Date",
+    "Overs",
+    "Runs",
+    "Wickets",
+    "Maiden",
+    "Eco",
+    "Catches",
+    "Stumps"
+  ];
 
-  let rows = props.data.map(d => {
-    if (props.name === "bat") {
-      return {
-        Date: d.Date,
-        Matches: d.team,
-        Score: d.Score,
-        Balls: d.Balls,
-        "S/R": d.SR,
-        "4s": d["4s"],
-        "6s": d["6s"],
-        Wicket: d.Wicket
-      };
-    } else if (props.name === "bowl") {
-    }
-  });
+  let tableData = [];
+  let tableColumns =
+    props.name === "bat"
+      ? tableColsBat.map(c => <StyledTableCell>{c}</StyledTableCell>)
+      : tableColsBowl.map(c => <StyledTableCell>{c}</StyledTableCell>);
+
+  tableData =
+    props.data &&
+    props.data.map(d => {
+      return Object.values(d);
+    });
 
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
-          <TableRow>
-            <StyledTableCell>Date</StyledTableCell>
-            <StyledTableCell>Matches</StyledTableCell>
-            <StyledTableCell>Score</StyledTableCell>
-            <StyledTableCell>Balls</StyledTableCell>
-            <StyledTableCell>S/R</StyledTableCell>
-            <StyledTableCell>4's</StyledTableCell>
-            <StyledTableCell>6's</StyledTableCell>
-            <StyledTableCell>Wicket</StyledTableCell>
-          </TableRow>
+          <TableRow>{tableColumns}</TableRow>
         </TableHead>
-        <TableBody>
-          {rows.map(row => (
+        {tableData.length !== 0 ? (
+          <TableBody>
+            {tableData.map(x => (
+              <StyledTableRow>
+                {x.map(d => (
+                  <StyledTableCell>{d}</StyledTableCell>
+                ))}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        ) : (
+          <TableBody>
             <StyledTableRow>
-              <StyledTableCell>{row.Date}</StyledTableCell>
-              <StyledTableCell>{row.Matches}</StyledTableCell>
-              <StyledTableCell>{row.Score}</StyledTableCell>
-              <StyledTableCell>{row.Balls}</StyledTableCell>
-              <StyledTableCell>{row["S/R"]}</StyledTableCell>
-              <StyledTableCell>{row["4s"]}</StyledTableCell>
-              <StyledTableCell>{row["6s"]}</StyledTableCell>
-              <StyledTableCell>{row.Wicket}</StyledTableCell>
+              <StyledTableCell>No Data Found</StyledTableCell>
             </StyledTableRow>
-          ))}
-        </TableBody>
+          </TableBody>
+        )}
       </Table>
     </TableContainer>
   );

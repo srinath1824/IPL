@@ -23,10 +23,34 @@ class PlayerInfo extends Component {
       }
     }
 
-    // let batStats, bowlStats = {};
-    // if(playerInfo.matches) {
-    //   playerInfo.matches.map()
-    // }
+    let batStats = [];
+    let bowlStats = [];
+    if (playerInfo.matches) {
+      playerInfo.matches.map(match => {
+        let bat = {
+          Date: match.Date,
+          Matches: match.team,
+          Score: match.Score,
+          Balls: match.Balls,
+          SR: match.SR,
+          "4s": match["4s"],
+          "6s": match["6s"],
+          Wicket: match.Wicket
+        };
+        let bowl = {
+          Date: match.Date,
+          Overs: match.Overs,
+          Runs: match.Runs,
+          Wickets: match.Wicket,
+          Maiden: match.Maiden,
+          Eco: match.Eco,
+          Catches: match.Catches,
+          Stumps: match.Stumps
+        };
+        batStats.push(bat);
+        bowlStats.push(bowl);
+      });
+    }
 
     return (
       <Container maxWidth="md">
@@ -46,15 +70,15 @@ class PlayerInfo extends Component {
               lg={3}
               style={{ color: "white" }}
             >
-              {playerInfo.overseas && (
+              {/* {playerInfo.overseas && (
                 <FlightIcon style={{ transform: "translate(0px, -150px)" }} />
               )}
               {playerInfo.Captain && (
                 <CopyrightIcon
                   color="primary"
                   style={{ transform: "translate(0px, -150px)" }}
-                />
-              )}
+                /> */}
+
               <div
                 style={{
                   fontWeight: 900,
@@ -118,9 +142,9 @@ class PlayerInfo extends Component {
           </Grid>
         </Card>
         <h1>Batting</h1>
-        <TableInfo data={playerInfo.matches} name="bat" />
+        <TableInfo data={batStats} name="bat" />
         <h1>Bowling</h1>
-        <TableInfo data={playerInfo.matches} name="bowl" />
+        <TableInfo data={bowlStats} name="bowl" />
       </Container>
     );
   }
