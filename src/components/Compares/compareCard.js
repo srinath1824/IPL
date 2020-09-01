@@ -14,11 +14,13 @@ class CompareCard extends Component {
       <Container fixed>
         <Grid container>
           <Grid item xs={12} sm={12} lg={12}>
-            <img src={`/Teams/${this.props.team}/${this.props.name}.png`} />
-            {filteredData.overseas && (
+            {filteredData && (
+              <img src={`/Teams/${this.props.team}/${this.props.name}.png`} />
+            )}
+            {filteredData && filteredData.overseas && (
               <FlightIcon style={{ transform: "translate(0px, -150px)" }} />
             )}
-            {filteredData.Captain && (
+            {filteredData && filteredData.Captain && (
               <CopyrightIcon
                 color="primary"
                 style={{ transform: "translate(0px, -150px)" }}
@@ -32,10 +34,13 @@ class CompareCard extends Component {
             lg={12}
             // style={{ textAlign: "center", marginTop: "80px" }}
           >
-            <strong>
-              {filteredData.playerName}&nbsp;&nbsp;({this.props.team})
-            </strong>
-            <div>{filteredData.role}</div>
+            {filteredData && (
+              <strong>
+                {filteredData.playerName}&nbsp;&nbsp;(
+                {this.props.team})
+              </strong>
+            )}
+            <div>{filteredData && filteredData.role}</div>
           </Grid>
         </Grid>
       </Container>

@@ -7,6 +7,7 @@ import "./App.css";
 import Form from "./components/forms/form";
 import PlayerInfo from "./components/playerInfo";
 import Compare from "./components/Compares";
+import Donate from "./components/Donate";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route exact path="/form" render={() => <Form />} />
             <Route exact path="/playerInfo" render={() => <PlayerInfo />} />
             <Route exact path="/Compare" render={() => <Compare />} />
+            <Route exact path="/Donate" render={() => <Donate />} />
           </div>
         </Switch>
       </Router>

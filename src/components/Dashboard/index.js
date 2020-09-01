@@ -1,18 +1,29 @@
-import React, { Component } from "react";
+import { Grid } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import { Grid } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
+import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import actionTypes from "../actions";
-import axios from "axios";
+import { teamsDataApiCall } from "../apiCalls";
+import Popup from "../Popup";
 import "./index.css";
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      donationPopup: true
+    };
+  }
+
+  componentWillMount() {
+    let popup = sessionStorage.getItem("donatePopup");
+    if (popup !== "false") {
+      sessionStorage.setItem("donatePopup", true);
+    }
   }
 
   componentDidMount() {
@@ -22,8 +33,21 @@ class Dashboard extends Component {
     }
   }
 
-  handleClick(team) {
+  handleDisagree() {
+    this.setState({ donationPopup: false });
+    sessionStorage.setItem("donatePopup", false);
+  }
+
+  handleDonatePopup() {
+    sessionStorage.setItem("donatePopup", false);
+    this.setState({ donationPopup: false });
+    this.props.history.push("Donate");
+  }
+
+  async handleClick(team) {
     this.props.setTeamSelected(team.name);
+    sessionStorage.setItem("teamSelected", team.name);
+    sessionStorage.setItem("jerseyColor", team.color);
     this.props.setJersey(team.color);
     this.props.loadingSelected(true);
     if (this.props.iplTeams[team.name].length > 0) {
@@ -34,8 +58,7 @@ class Dashboard extends Component {
         players: this.props.iplTeams[team.name]
       });
     } else {
-      axios
-        .get(`http://192.168.0.8:5000/api/getdata/${team.name}`)
+      await teamsDataApiCall(team.name)
         .then(res => {
           this.props.loadingSelected(false);
           this.props.getTeamSelected(res.data);
@@ -116,6 +139,7 @@ class Dashboard extends Component {
   }
 
   render() {
+    let donationPopupShown = sessionStorage.getItem("donatePopup");
     return (
       <div style={{}}>
         <Grid container spacing={5}>
@@ -193,6 +217,15 @@ class Dashboard extends Component {
             })}
           </Grid>
         </Grid>
+        {this.state.donationPopup && donationPopupShown === "true" && (
+          <Popup
+            show={this.state.donationPopup}
+            title="Fan made Dream11 analysis application"
+            content="Donate us and encorage our efforts"
+            disagree={() => this.handleDisagree()}
+            close={() => this.handleDonatePopup()}
+          />
+        )}
       </div>
     );
   }

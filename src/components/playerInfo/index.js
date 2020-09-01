@@ -2,17 +2,25 @@ import React, { Component } from "react";
 import { Grid, Card, Container } from "@material-ui/core";
 import { connect } from "react-redux";
 import TableInfo from "./tableInfo";
+import actionTypes from "../actions";
 import FlightIcon from "@material-ui/icons/Flight";
 import CopyrightIcon from "@material-ui/icons/Copyright";
 import "./index.css";
 
 class PlayerInfo extends Component {
+  componentWillMount() {
+    if (!this.props.teamSelected && this.props.playerSelected) {
+      this.props.setPlayerSelected(sessionStorage.getItem("playerSelected"));
+      this.props.setTeamSelected(sessionStorage.getItem("teamSelected"));
+    }
+  }
+
   render() {
     let playerInfo = this.props.team.find(
       a => a.playerName === this.props.playerSelected
     );
     let firstName, lastName;
-    if (playerInfo.playerName) {
+    if (playerInfo && playerInfo.playerName) {
       let name = playerInfo.playerName.split(" ");
       if (name.length === 2) {
         firstName = name[0];
@@ -25,7 +33,7 @@ class PlayerInfo extends Component {
 
     let batStats = [];
     let bowlStats = [];
-    if (playerInfo.matches) {
+    if (playerInfo && playerInfo.matches) {
       playerInfo.matches.map(match => {
         let bat = {
           Date: match.Date,
@@ -58,7 +66,8 @@ class PlayerInfo extends Component {
           <Grid container>
             <Grid item xs={12} sm={4} lg={3} style={{ textAlign: "center" }}>
               <img
-                src={`/Teams/${this.props.teamSelected}/${playerInfo.playerName}.png`}
+                src={`/Teams/${this.props.teamSelected}/${playerInfo &&
+                  playerInfo.playerName}.png`}
                 width="180px"
               />
             </Grid>
@@ -70,15 +79,6 @@ class PlayerInfo extends Component {
               lg={3}
               style={{ color: "white" }}
             >
-              {/* {playerInfo.overseas && (
-                <FlightIcon style={{ transform: "translate(0px, -150px)" }} />
-              )}
-              {playerInfo.Captain && (
-                <CopyrightIcon
-                  color="primary"
-                  style={{ transform: "translate(0px, -150px)" }}
-                /> */}
-
               <div
                 style={{
                   fontWeight: 900,
@@ -89,7 +89,17 @@ class PlayerInfo extends Component {
                 }}
               >
                 <div style={{ fontWeight: 100 }}>{firstName}</div>
-                <div>{lastName}</div>
+                <div>
+                  {lastName}
+                  <CopyrightIcon
+                    color="primary"
+                    style={{
+                      backgroundColor: "blue",
+                      color: "white",
+                      borderRadius: "50%"
+                    }}
+                  />
+                </div>
               </div>
               <Grid container className="playerInfo">
                 <Grid item xs={3}>
@@ -98,9 +108,9 @@ class PlayerInfo extends Component {
                   <div>Price</div>
                 </Grid>
                 <Grid item xs={6}>
-                  <div>{playerInfo.role}</div>
+                  <div>{playerInfo && playerInfo.role}</div>
                   <div>{this.props.teamSelected}</div>
-                  <div>{playerInfo.price}</div>
+                  <div>{playerInfo && playerInfo.price}</div>
                 </Grid>
               </Grid>
             </Grid>
@@ -157,5 +167,12 @@ function mapStateToProps(state) {
     jerseyColor: state.dashboard.jersey
   };
 }
+function mapDispatchToProps(dispatch) {
+  return {
+    setPlayerSelected: data =>
+      dispatch({ type: actionTypes.PLAYER_SELECT, data }),
+    setTeamSelected: data => dispatch({ type: actionTypes.TEAM_SELECT, data })
+  };
+}
 
-export default connect(mapStateToProps, null)(PlayerInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(PlayerInfo);

@@ -37,11 +37,13 @@ class Compare extends Component {
   changeHandler(e) {
     this.props.setTeamUpdate(e.target);
     this.setState({ showDropDowm: false });
-    console.log(e.target.value);
-    if (e.target.name === "player1") {
+    if (e.target.name === "team1") {
+      this.props.setTeamUpdate({ name: "player1", value: "" });
+    } else if (e.target.name === "team2") {
+      this.props.setTeamUpdate({ name: "player2", value: "" });
+    } else if (e.target.name === "player1") {
       this.setState({ player1Stage: true });
-    }
-    if (e.target.name === "player2") {
+    } else if (e.target.name === "player2") {
       this.setState({ player2Stage: true });
     }
     if (
@@ -80,7 +82,7 @@ class Compare extends Component {
         return <MenuItem value={p.playerName}>{p.playerName}</MenuItem>;
       });
     }
-    let team2Players;
+    let team2Players = "";
     if (
       this.props.team2Selected &&
       this.props.teamsData[this.props.team2Selected]
@@ -141,7 +143,7 @@ class Compare extends Component {
                 <InputLabel>{`Select ${this.props.team1Selected} Player`}</InputLabel>
                 <DropDown
                   name="player1"
-                  label="Select Team1"
+                  label="Select Player1"
                   value={team1Players}
                   change={e => this.changeHandler(e)}
                 />
@@ -155,7 +157,7 @@ class Compare extends Component {
                 <InputLabel>{`Select ${this.props.team2Selected} Player`}</InputLabel>
                 <DropDown
                   name="player2"
-                  label="Select Team2"
+                  label="Select Player2"
                   value={team2Players}
                   change={e => this.changeHandler(e)}
                 />

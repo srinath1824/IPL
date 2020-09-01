@@ -54,7 +54,7 @@ function Header(props) {
             >
               Compare
             </Link>
-            <Link
+            {/* <Link
               style={{
                 color: "white",
                 textDecoration: "none",
@@ -70,10 +70,20 @@ function Header(props) {
                 textDecoration: "none",
                 marginLeft: "20px"
               }}
-              to="/"
+              to="//www.dream11.com"
             >
               Dream11
             </Link>
+            <Link
+              style={{
+                color: "white",
+                textDecoration: "none",
+                marginLeft: "20px"
+              }}
+              to="/Donate"
+            >
+              Donate
+            </Link> */}
           </Typography>
         </Toolbar>
       </AppBar>

@@ -9,18 +9,36 @@ import CopyrightIcon from "@material-ui/icons/Copyright";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
+import { teamsDataApiCall } from "../apiCalls";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class Teams extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
+  async componentDidMount() {
     if (this.props.playerSelected) {
       this.props.setPlayerSelected("");
+    }
+    if (
+      this.props.teamsdata[sessionStorage.getItem("teamSelected")].length === 0
+    ) {
+      let team = sessionStorage.getItem("teamSelected");
+      await teamsDataApiCall(team)
+        .then(res => {
+          this.props.loadingSelected(false);
+          this.props.getTeamSelected(res.data);
+          this.props.setTeamSelected(team);
+          this.props.teamsSelected({ name: team, players: res.data });
+          this.props.setJersey(sessionStorage.getItem("jerseyColor"));
+        })
+        .catch(err => console.log("error"));
     }
   }
   handleData(name) {
     this.props.setPlayerSelected(name);
+    sessionStorage.setItem("playerSelected", name);
     this.props.history.push("/playerInfo");
   }
 
@@ -31,7 +49,6 @@ class Teams extends Component {
       teamOrder.map(o => {
         members.push(
           this.props.team.map(m => {
-            console.log(m);
             if (o === m.role) {
               return (
                 <Grid item xs={12} sm={4} lg={3}>
@@ -46,20 +63,6 @@ class Teams extends Component {
                         background: this.props.jersey
                       }}
                     >
-                      {/* <div onClick={() => this.handleData(m.playerName)}>
-                        {m.overseas && (
-                          <FlightIcon
-                            style={{ transform: "translate(0px, -150px)" }}
-                          />
-                        )}
-                        {m.Captain && (
-                          <CopyrightIcon
-                            color="primary"
-                            style={{ transform: "translate(0px, -150px)" }}
-                          />
-                        )}
-                      </div> */}
-
                       <div
                         style={{
                           justifyContent: "center"
@@ -159,7 +162,12 @@ class Teams extends Component {
         );
       });
     } else {
-      return <h1>No Data Found</h1>;
+      //return <h1>No Data Found</h1>;
+      return (
+        <Backdrop open={true}>
+          <CircularProgress color="primary" />
+        </Backdrop>
+      );
     }
     return (
       <div style={{ textAlign: "center" }}>
@@ -177,6 +185,7 @@ class Teams extends Component {
 function mapStateToProps(state) {
   return {
     team: state.dashboard.team,
+    teamsdata: state.teams,
     teamSelected: state.dashboard.teamSelected,
     loading: state.dashboard.loading,
     jersey: state.dashboard.jersey,
@@ -186,7 +195,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     setPlayerSelected: data =>
-      dispatch({ type: actionTypes.PLAYER_SELECT, data })
+      dispatch({ type: actionTypes.PLAYER_SELECT, data }),
+    setTeamSelected: data => dispatch({ type: actionTypes.TEAM_SELECT, data }),
+    getTeamSelected: data => dispatch({ type: actionTypes.SELECT_TEAM, data }),
+    loadingSelected: data => dispatch({ type: actionTypes.LOADING_PAGE, data }),
+    teamsSelected: data => dispatch({ type: actionTypes.TEAMS_SELECT, data }),
+    setJersey: data => dispatch({ type: actionTypes.SET_JERSEY, data })
   };
 }
 
